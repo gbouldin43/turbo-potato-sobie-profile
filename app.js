@@ -16,6 +16,16 @@ app.post('/saveMyName', (req,res)=>{
 
   console.log(req.body);
 
+  //res.redirect('/ejs');
+
+  res.render('words', {pageTitle: req.body.myName});
+})
+
+app.get('/saveMyNameGet', (req,res)=>{
+  console.log('did we hit the endpoint?');
+
+  console.log(req.query);
+
   res.redirect('/ejs');
 })
 
