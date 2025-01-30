@@ -33,7 +33,30 @@ async function run() {
     await client.close();
   }
 }
-run().catch(console.dir);
+//run().catch(console.dir);
+
+async function getData() {
+
+  await client.connect();
+  let collection = await client.db("garrett-sobie-profile").collection("garrett-sobie-profile");
+
+  let results = await collection.find({}).toArray();
+    //.limit(50)
+    //.toArray();
+  
+  console.log(results);
+  return results;
+
+}
+
+
+app.get('/read', async function (req, res){
+  let getDataResults = await getData();
+  console.log(getDataResults);
+  res.render('songs',
+    { songData : getDataResults}
+  )
+})
 
 
 app.get('/', function (req, res) {
