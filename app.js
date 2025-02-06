@@ -3,6 +3,7 @@ require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser')
+const { ObjectId } = require('mongodb');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = process.env.MONGO_URI;
 
@@ -56,6 +57,55 @@ app.get('/read', async function (req, res){
   res.render('songs',
     { songData : getDataResults}
   )
+})
+
+app.post('/insert', async (req,res)=> {
+//app.get('/insert', async (req,res)=> {
+  console.log('in /insert');
+
+  let newSong = req.body.myName;
+  //let newSong = req.query.myName;
+
+  await client.connect();
+
+  await client.db("garrett-sobie-profile").collection("garrett-sobie-profile").insertOne({song: newSong});
+    res.redirect('/read');
+})
+
+app.post('/update', async (req,res)=>{
+
+  console.log("req.body: ", req.body)
+
+  client.connect; 
+  const collection = client.db("garrett-sobie-profile").collection("garrett-sobie-profile");
+  let result = await collection.findOneAndUpdate( 
+
+  {"_id": new ObjectId(req.body.nameID)}, 
+  
+  { $set: {"fname": req.body.inputUpdateName } }
+)
+.then(result => {
+  console.log(result); 
+  res.redirect('/');
+})
+});
+
+app.post('/delete/:id', async (req,res)=>{
+
+  console.log("in delete, req.parms.id: ", req.params.id)
+
+  client.connect; 
+  const collection = client.db("garrett-sobie-profile").collection("garrett-sobie-profile");
+  let result = await collection.findOneAndDelete( 
+    {
+      "_id": new ObjectId(req.params.id)
+    }
+  ).then(result => {
+  console.log(result); 
+  res.redirect('/read');})
+
+  
+
 })
 
 
